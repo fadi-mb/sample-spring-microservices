@@ -10,7 +10,7 @@ node {
         }
 
         stage('Build') {
-            sh 'mvn clean install'
+            bat 'call mvn clean install'
 
             def pom = readMavenPom file:'pom.xml'
             print pom.version
@@ -25,6 +25,8 @@ node {
         }
 
         stage ('Run') {
+            bat 'docker stop account'
+            bat 'docker rm account' 
             docker.image("localhost:5000/account-service:${env.version}").run('-p 2222:2222 -h account --name account --link discovery')
         }
 

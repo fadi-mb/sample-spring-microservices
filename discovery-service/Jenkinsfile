@@ -7,7 +7,7 @@ node {
         }
 
         stage('Build') {
-            sh 'mvn clean install'
+            bat 'call mvn clean install'
 
             def pom = readMavenPom file:'pom.xml'
             print pom.version
@@ -22,6 +22,8 @@ node {
         }
 
         stage ('Run') {
+            bat 'docker stop discovery'
+            bat 'docker rm discovery' 
             docker.image("localhost:5000/discovery-service:${env.version}").run('-p 8761:8761 -h discovery --name discovery')
         }
 

@@ -7,7 +7,7 @@ node {
         }
 
         stage('Build') {
-            sh 'mvn clean install'
+            bat 'call mvn clean install'
 
             def pom = readMavenPom file:'pom.xml'
             print pom.version
@@ -22,7 +22,9 @@ node {
         }
 
         stage ('Run') {
-            docker.image("localhost:5000/gateway-service:${env.version}").run('-p 3333:3333 -h gateway --name gateway --link discovery --link account --link customer')
+            bat 'docker stop gateway'
+            bat 'docker rm gateway' 
+            docker.image("localhost:5000/gateway-service:${env.version}").run('-p 1111:1111 -h gateway --name gateway --link discovery --link account --link customer')
         }
      
 
